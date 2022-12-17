@@ -530,6 +530,30 @@ qt(0.025, 19) # 自由度19のt分布で下側確率0.025となるtの確率を�
 0.01697となっているので、p値が0.05より小さいことがわかり、帰無仮説が棄却できることがわかる</li>
 </ul>
 </div>
+<div id="相関係数の検定-無相関検定" class="section level2">
+<h2>相関係数の検定 (無相関検定)</h2>
+<ul>
+<li>帰無仮説を、「母集団において相関が0である」と設定するので、無相関検定とも呼ばれる</li>
+<li>p値が0.05よりも小さければ帰無仮説が棄却されて、相関があるという話になる</li>
+<li><code>cor.test</code> 関数使えば実行できる
+<ul>
+<li>デフォルトピアソンのピアソンの積率相関係数が使われるがmethodパラメータで別の方法での相関係数検定を行える</li>
+<li><blockquote>
+<p>alternative hypothesis: true correlation is not equal to
+0」とは、対立仮説が「ρ ≠
+0」であることを示しています。これより両側検定であることが分かります。</p>
+</blockquote></li>
+<li><blockquote>
+<p>「95 percent confidence interval：0.4596086
+0.8952048」では、95％信頼区間の下限と上限の値が示されています。信頼区間の信頼係数は変更することが可能です。90％信頼区間を求めたいのであれば、conf.level＝0.9とオプションをつけてください。</p>
+</blockquote></li>
+<li><blockquote>
+<p>最後の「sample
+estimates:」では標本から計算された標本相関係数の実現値が示されています。</p>
+</blockquote></li>
+</ul></li>
+</ul>
+</div>
 <div id="独立性の検定-カイ二乗検定" class="section level2">
 <h2>独立性の検定 (カイ二乗検定)</h2>
 <ul>
@@ -559,7 +583,139 @@ chisq.test(クロス集計表, correct = FALSE)</code></pre>
 ## 
 ## data:  クロス集計表
 ## X-squared = 2.5397, df = 1, p-value = 0.111</code></pre>
-<p>hogehoge aaaa</p>
+</div>
+<div id="練習問題" class="section level2">
+<h2>練習問題</h2>
+<div id="section" class="section level3">
+<h3>(1)</h3>
+<pre class="r"><code>身長 &lt;- c(165, 150, 170, 168, 159, 170, 167, 178, 155, 159, 161, 162, 166, 171, 155, 160, 168, 172, 155, 167)
+t.test(身長, mu = 170)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  身長
+## t = -3.8503, df = 19, p-value = 0.001079
+## alternative hypothesis: true mean is not equal to 170
+## 95 percent confidence interval:
+##  160.584 167.216
+## sample estimates:
+## mean of x 
+##     163.9</code></pre>
+<ul>
+<li>集合はこの国の母集団からの無造作標本と考えて良いか？</li>
+<li>帰無仮説
+<ul>
+<li>無造作標本である</li>
+</ul></li>
+<li>対立仮設
+<ul>
+<li>無造作標本でない</li>
+</ul></li>
+<li>優位水準
+<ul>
+<li>5%</li>
+</ul></li>
+<li>p-value
+<ul>
+<li>0.001</li>
+</ul></li>
+<li>帰無仮説は棄却されてるので、無造作標本ではないと考えられる</li>
+</ul>
+</div>
+<div id="section-1" class="section level3">
+<h3>(2)</h3>
+<pre class="r"><code>勉強時間 &lt;- c(1, 3, 10, 12, 6, 3, 8, 4, 1, 5)
+得点 &lt;- c(20, 40, 100, 80, 50, 50, 70, 50, 10, 60)
+cor.test(勉強時間, 得点)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  勉強時間 and 得点
+## t = 6.1802, df = 8, p-value = 0.0002651
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.6542283 0.9786369
+## sample estimates:
+##       cor 
+## 0.9092974</code></pre>
+</div>
+<div id="section-2" class="section level3">
+<h3>(3)</h3>
+<pre class="r"><code>cor.test(勉強時間, 得点, method = &quot;spearman&quot;)</code></pre>
+<pre><code>## Warning in cor.test.default(勉強時間, 得点, method = &quot;spearman&quot;): タイのため正確
+## な p 値を計算することができません</code></pre>
+<pre><code>## 
+##  Spearman&#39;s rank correlation rho
+## 
+## data:  勉強時間 and 得点
+## S = 10.182, p-value = 5.887e-05
+## alternative hypothesis: true rho is not equal to 0
+## sample estimates:
+##       rho 
+## 0.9382895</code></pre>
+<pre class="r"><code>cor.test(勉強時間, 得点, method = &quot;kendall&quot;)</code></pre>
+<pre><code>## Warning in cor.test.default(勉強時間, 得点, method = &quot;kendall&quot;): タイのため正確
+## な p 値を計算することができません</code></pre>
+<pre><code>## 
+##  Kendall&#39;s rank correlation tau
+## 
+## data:  勉強時間 and 得点
+## z = 3.2937, p-value = 0.0009889
+## alternative hypothesis: true tau is not equal to 0
+## sample estimates:
+##       tau 
+## 0.8471174</code></pre>
+</div>
+<div id="section-3" class="section level3">
+<h3>(4)</h3>
+<pre class="r"><code>食事タイプ &lt;- c(&quot;洋食&quot;, &quot;和食&quot;, &quot;和食&quot;, &quot;洋食&quot;, &quot;和食&quot;, &quot;洋食&quot;, &quot;洋食&quot;, &quot;和食&quot;, &quot;洋食&quot;, &quot;洋食&quot;, &quot;和食&quot;, &quot;洋食&quot;, &quot;和食&quot;, &quot;洋食&quot;, &quot;和食&quot;, &quot;和食&quot;, &quot;洋食&quot;, &quot;洋食&quot;, &quot;和食&quot;, &quot;和食&quot;)
+味覚 &lt;- c(&quot;甘党&quot;, &quot;辛党&quot;, &quot;甘党&quot;, &quot;甘党&quot;, &quot;辛党&quot;, &quot;辛党&quot;, &quot;辛党&quot;, &quot;辛党&quot;, &quot;甘党&quot;, &quot;甘党&quot;, &quot;甘党&quot;, &quot;甘党&quot;, &quot;辛党&quot;, &quot;辛党&quot;, &quot;甘党&quot;, &quot;辛党&quot;, &quot;辛党&quot;, &quot;甘党&quot;, &quot;辛党&quot;, &quot;辛党&quot;)
+食事クロス集計表 &lt;- table(食事タイプ, 味覚)
+chisq.test(食事クロス集計表, correct = FALSE)</code></pre>
+<pre><code>## Warning in chisq.test(食事クロス集計表, correct = FALSE): カイ自乗近似は不正確か
+## もしれません</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  食事クロス集計表
+## X-squared = 1.8182, df = 1, p-value = 0.1775</code></pre>
+</div>
+<div id="section-4" class="section level3">
+<h3>(5-1)</h3>
+<pre class="r"><code>国語 &lt;- c(60, 40, 30, 70, 55)
+社会 &lt;- c(80, 25, 35, 70, 50)
+cor.test(国語, 社会)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  国語 and 社会
+## t = 2.6952, df = 3, p-value = 0.07408
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1590624  0.9892731
+## sample estimates:
+##      cor 
+## 0.841263</code></pre>
+</div>
+<div id="section-5" class="section level3">
+<h3>(5-2)</h3>
+<pre class="r"><code>国語 &lt;- c(60, 40, 30, 70, 55)
+国語2 &lt;- rep(国語, 2)
+社会 &lt;- c(80, 25, 35, 70, 50)
+社会2 &lt;- rep(社会, 2)
+cor.test(国語2, 社会2)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  国語2 and 社会2
+## t = 4.4013, df = 8, p-value = 0.002283
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.4499858 0.9615658
+## sample estimates:
+##      cor 
+## 0.841263</code></pre>
+</div>
 </div>
 
 
