@@ -369,10 +369,209 @@ display: none;
 <pre class="r"><code>統計1女 &lt;- c(11, 6, 11, 9, 7, 5, 8, 7, 7, 9)
 統計1女</code></pre>
 <pre><code>##  [1] 11  6 11  9  7  5  8  7  7  9</code></pre>
+<pre class="r"><code>t.test(統計1男, 統計1女, var.equal = TRUE)</code></pre>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  統計1男 and 統計1女
+## t = -1.8429, df = 18, p-value = 0.08188
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -4.2800355  0.2800355
+## sample estimates:
+## mean of x mean of y 
+##         6         8</code></pre>
 <ul>
 <li>帰無仮説: ２つの母平均は等しい</li>
 <li>対立仮設: ２つの母平均は等しくない</li>
+<li>上記のケースではt検定の前提条件のチェックがなされていない</li>
 </ul>
+<div id="t検定の前提条件" class="section level2">
+<h2>t検定の前提条件</h2>
+<ul>
+<li>t検定の前提条件
+<ul>
+<li>標本が無作為に抽出されていること</li>
+<li>母集団の分布が正規分布に従っていること</li>
+<li>2つの母集団の分散が等質であること</li>
+</ul></li>
+</ul>
+<pre class="r"><code>classA &lt;- c(54, 55, 52, 48, 50, 38, 41, 40, 53, 52)
+classB &lt;- c(67, 63, 50, 60, 61, 69, 43, 58, 36, 29)
+t.test(classA, classB, var.equal = TRUE)</code></pre>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  classA and classB
+## t = -1.1191, df = 18, p-value = 0.2778
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -15.249541   4.649541
+## sample estimates:
+## mean of x mean of y 
+##      48.3      53.6</code></pre>
+<ul>
+<li>分散の等質性の検定
+<ul>
+<li>var.testで検定できる</li>
+<li>p値が0.05以下であれば、帰無仮説が棄却され、分散の等質性の仮定は満たされないことになる</li>
+</ul></li>
+<li>分散の等質性の仮定は満たされない場合にはT検定の代わりにWelchの検定が使える</li>
+</ul>
+</div>
+<div id="welchiの検定" class="section level2">
+<h2>Welchiの検定</h2>
+<ul>
+<li>t.test関数でvar.equal=FALSEのオプション(もしくはオプションを省略)をつけるとWelchの検定が行われる</li>
+</ul>
+<pre class="r"><code>t.test(classA, classB, var.equal = FALSE)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  classA and classB
+## t = -1.1191, df = 12.71, p-value = 0.2838
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -15.554888   4.954888
+## sample estimates:
+## mean of x mean of y 
+##      48.3      53.6</code></pre>
+</div>
+<div id="対応のあるt検定" class="section level2">
+<h2>対応のあるt検定</h2>
+<ul>
+<li>無造作でなく、恣意的にある母集団から郡を作った場合、これらの郡を対応のあるデータと呼ぶ</li>
+<li>対応のあるデータの場合は、独立な2郡のt検定とは別の方法を取る必要がある</li>
+</ul>
+<pre class="r"><code>統計テスト1 &lt;- c(6, 10, 6, 10, 5, 3, 5, 9, 3, 3, 11, 6, 11, 9, 7, 5, 8, 7, 7, 9)
+統計テスト2 &lt;- c(10, 13, 8, 15, 8, 6, 9, 10, 7, 3, 18, 14, 18, 11, 12, 5, 7, 12, 7, 7)
+t.test(統計テスト1, 統計テスト2, paired = TRUE)</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  統計テスト1 and 統計テスト2
+## t = -4.8399, df = 19, p-value = 0.0001138
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  -4.297355 -1.702645
+## sample estimates:
+## mean difference 
+##              -3</code></pre>
+<ul>
+<li>t.test関数にpaired=TRUEのオプションを増やすと、対応のありの場合でも、変化量を考慮していい感じにT検定してくれる</li>
+</ul>
+</div>
+<div id="練習問題" class="section level2">
+<h2>練習問題</h2>
+<ul>
+<li>帰無仮説: 母平均等しい</li>
+<li>対立仮設: 母平均等しくない</li>
+</ul>
+<div id="section" class="section level3">
+<h3>(1)</h3>
+<pre class="r"><code>like &lt;- c(6, 10, 6, 10, 11, 6, 11, 7)
+hate &lt;- c(5, 3, 5, 9, 3, 3, 9, 5, 8, 7, 7, 9)
+# variances check
+var.test(like, hate)</code></pre>
+<pre><code>## 
+##  F test to compare two variances
+## 
+## data:  like and hate
+## F = 0.94598, num df = 7, denom df = 11, p-value = 0.9781
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.2516814 4.4550605
+## sample estimates:
+## ratio of variances 
+##          0.9459792</code></pre>
+<pre class="r"><code># t test
+t.test(like, hate, var.equal = TRUE)</code></pre>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  like and hate
+## t = 2.1218, df = 18, p-value = 0.048
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.02250531 4.56082802
+## sample estimates:
+## mean of x mean of y 
+##  8.375000  6.083333</code></pre>
+<ul>
+<li>好き、嫌いというそれぞれの母集団から標本抽出しているので、対応なし検定?
+<ul>
+<li>問題文見ると恣意的に分けてる気がしていて、若干ピンときてないところも</li>
+</ul></li>
+<li>分散テストのp値が5%以上なので、分散の仮定は満たされている</li>
+<li>T検定の結果p値が5%以上でなので、2つの郡の母集団平均は等しい</li>
+</ul>
+</div>
+<div id="section-1" class="section level3">
+<h3>(2)</h3>
+<pre class="r"><code>psy_man &lt;- c(13, 14, 7, 12, 10, 6, 8, 15, 4, 14)
+psy_woman &lt;- c(9, 6, 10, 12, 5, 12, 8, 8, 12, 15)
+# variances check
+var.test(psy_man, psy_woman)</code></pre>
+<pre><code>## 
+##  F test to compare two variances
+## 
+## data:  psy_man and psy_woman
+## F = 1.5575, num df = 9, denom df = 9, p-value = 0.5196
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.3868588 6.2704508
+## sample estimates:
+## ratio of variances 
+##           1.557491</code></pre>
+<pre class="r"><code># t test
+t.test(psy_man, psy_woman, var.equal = TRUE)</code></pre>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  psy_man and psy_woman
+## t = 0.38359, df = 18, p-value = 0.7058
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.686225  3.886225
+## sample estimates:
+## mean of x mean of y 
+##      10.3       9.7</code></pre>
+<ul>
+<li>男、女というそれぞれの母集団から標本抽出しているので、対応あり検定?
+<ul>
+<li>問題文見ると恣意的に分けてる気がしていて、若干ピンときてないところも</li>
+</ul></li>
+<li>分散テストのp値が5%以上なので、分散の仮定は満たされている</li>
+<li>T検定の結果p値が5%以上でなので、2つの郡の母集団平均は等しい</li>
+</ul>
+</div>
+<div id="section-2" class="section level3">
+<h3>(3)</h3>
+<pre class="r"><code>before &lt;- c(61, 50, 41, 55, 51, 48, 46, 55, 65, 70)
+after &lt;- c(59, 48, 33, 54, 47, 52, 38, 50, 64, 63)
+t.test(before, after, paired = TRUE)</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  before and after
+## t = 2.8465, df = 9, p-value = 0.0192
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  0.6980082 6.1019918
+## sample estimates:
+## mean difference 
+##             3.4</code></pre>
+<ul>
+<li>対応ありなので、対応のあるt検定をおこなう
+<ul>
+<li><blockquote>
+<p>「指導法データ」には、「統計テスト1」と「統計テスト2」があります。これは、統計の指導を受ける前と後のテスト得点です。このように同じ被験者について複数の測定が行われている場合、これも対応のあるデータとなります。</p>
+</blockquote></li>
+</ul></li>
+<li>T検定の結果p値が5%未満でなので、2つの郡の母集団平均は等しくない(優位な差がある)</li>
+</ul>
+</div>
+</div>
 </div>
 
 
