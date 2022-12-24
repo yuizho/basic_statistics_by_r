@@ -95,3 +95,28 @@ summary(aov(taste ~ temperature * maker))
 interaction.plot(temperature, maker, taste)
 interaction.plot(maker, temperature, taste)
 ```
+
+## 二元配置分散分析 (対応あり)
+- 対応なしのときと違い、各水の種類ごとに二種類の温度のもとで、ランダムに割り振った品評者に美味しさについて点数をつけてもらう
+  - 条件ごとに人を割り振る形になるので、これは対応ありになる
+
+```{r}
+# わかりやすく人の名前にしてるけど、他人事にIDを割り振ったりしたほうが楽
+A1Conditoin <- rep(c("村松", "川崎", "井口", "松中", "城島"), 3)
+A2Conditoin <- rep(c("斎藤", "和田", "寺原", "杉内", "新垣"), 3)
+person2 <- factor(c(A1Conditoin, A2Conditoin))
+person2
+
+# temperature * makerでそれぞれの趣向かと交互作用のすべてを含めるという意味 (ここは前と変わらず)
+summary(aov(taste ~ temperature * maker + Error(person2:temperature + person2:temperature:maker)))
+```
+
++ `+ Error(person2:temperature + person2:temperature:maker)` で対応のない分散分析で残差としてまとめられていたものを、`person2:temperature` と `person2:temperature:maker` のそれぞれの要素に分解するもの
++ 温度の主効果、銘柄の主効果、2要素の交互作用効果のp値が全部5%以下で優位であることがわかる
+
+## 練習問題
+### (1)
+WIP
+
+### (2)
+WIP
