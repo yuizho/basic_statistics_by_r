@@ -1,0 +1,154 @@
+---
+title: "section8"
+output: html_document
+date: "2022-12-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#  ベクトル・行列の基礎
+
+```{r}
+# 単一の値はスカラー
+x <- 10
+x
+
+# 複数の値を縦または横に並べたものはベクトル
+y <- c(1, 2, 4)
+y
+```
+
+## ベクトル
+### ベクトルの作成
+```{r}
+veca <- c(1, 2, 3, 4, 5)
+veca
+
+# c(1,2,3,4,5) と同じ記述
+veca2 <- 1:5
+veca2
+
+veca3 <- 5:10
+veca3
+
+veca4 <- 10:1
+veca4
+
+veca5 <- -5:5
+veca5
+
+veca6 <- seq(1, 5, 1)
+veca6
+
+vecb <- seq(2, 10, 2)
+vecb
+
+vecc <- rep(1, 8)
+vecc
+```
+
+### ベクトルの基本演算
+```{r}
+veca
+vecb
+
+# それぞれの要素同士が演算される感じになる
+veca + vecb
+veca - vecb
+
+# 要素同士の積を足し合わせる (内積)
+veca %*% vecb
+
+# 各要素に5をかける
+veca * 5
+
+# 長さが倍数になってれば要素数が異なっていても演算可
+vecd <- c(2, 4)
+vecd
+
+veca + vecd
+```
+
+### 要素の取り出し
+```{r}
+vece <- 10:20
+
+vece[2]
+
+vece[3:7]
+
+# それぞれの要素を取り出して、別のベクトルに設定
+vecf <- vece[c(2, 4, 6, 8)]
+vecf
+```
+
+## 行列
+```{r}
+# 12桁のベクトルを3*4の行列に適用する感じ
+matrix(1:12, nrow = 3, ncol = 4)
+
+# 行優先で値を当てはめる
+matrix(1:12, nrow = 3, ncol = 4, byrow = TRUE)
+
+# 2つのベクトルを縦方向に並べる
+cbind(veca, vecb)
+
+# 2つのベクトルを横方向に並べる
+rbind(veca, vecb)
+```
+
+### 演算
+```{r}
+mata <- matrix(1:6, nrow = 2, ncol = 3)
+mata
+
+matb <- matrix(3:8, nrow = 2, ncol = 3)
+matb
+
+# 行列の一致する要素どうしが演算される
+mata + matb
+
+# 列行の転置
+matbt <- t(matb)
+matbt
+```
+
+### 要素の取り出し
+```{r}
+matd <- matrix(1:25, nrow = 5, ncol = 5)
+matd
+
+# 二列目の取り出し
+matd[, 2]
+
+# 二行目の取り出し
+matd[2, ]
+
+# 一列目と三列目ｎ取り出し
+matd[, c(1, 3)]
+
+# 二行目と四行目の取り出し
+matd[c(2, 4), ]
+
+matd[2, 4]
+```
+
+### 複数のベクトルから行列を作る
+- 質的変数と量的変数が混在している場合はdataframeを作る必要があるが、質的変数 or 量的変数のみの場合、データ全体を行列の形であつかうことができる
+```{r}
+A <- c(15, 9, 18, 14, 18)
+B <- c(13, 8, 8, 12, 7)
+C <- c(10, 6, 11, 7, 12)
+D <- c(10, 7, 3, 5, 7)
+
+#  複数のベクトルを横に並べて行列を作る
+all <- cbind(A, B, C, D)
+all
+
+mean(A)
+
+# allの一列目を指定してやれば、mean(A)と同じ結果が作れる
+mean(all[, 1])
+```
