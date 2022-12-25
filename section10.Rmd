@@ -1,0 +1,48 @@
+---
+title: "section10"
+output: html_document
+date: "2022-12-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# cranのmirrorを明示的に設定
+options(repos = "https://cran.ism.ac.jp/")
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+# 外れ値が相関係数に及ぼす影響
+
+## 散布図書いてみる
+```{r}
+brain_data <- read_tsv("animaldat.txt")
+brain_data
+
+ggplot(data = brain_data, mapping = aes(x = Body_weight, y = Brain_weight)) +
+    geom_point()
+```
+
+- かなり外れているデータがあることがわかる
+
+## 相関係数の計算
+```{r}
+cor(brain_data$Body_weight, brain_data$Brain_weight)
+```
+
+- 相関係数を見ると相関はほとんどないということになる
+- 極端に体重に対する脳の重さが軽い動物がいるので、これを外れ値とみなして除いてみる
+
+```{r}
+# 体重が80000より大きい動物をフィルターしてみる
+filtered_brain_data <- brain_data[brain_data$Body_weight < 80000, ]
+print(x = filtered_brain_data, n = 30)
+
+ggplot(data = filtered_brain_data, mapping = aes(x = Body_weight, y = Brain_weight)) +
+    geom_point()
+
+cor(filtered_brain_data$Body_weight, filtered_brain_data$Brain_weight)
+```
+
+- 外れ値を外すと相関係数が上がってより相関が強まることがわかった
+- ただ、外れ値外すのって、大きくずれたらはい外しましょうってわけにはいかないと思うんだけど、どんな感じで判断するものなんだろうか？
