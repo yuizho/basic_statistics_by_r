@@ -19,8 +19,10 @@ library(tidyverse)
 brain_data <- read_tsv("animaldat.txt")
 brain_data
 
+# https://data-viz-lab.com/ggplot2
 ggplot(data = brain_data, mapping = aes(x = Body_weight, y = Brain_weight)) +
-    geom_point()
+    geom_point() +
+    geom_smooth(method = "lm")
 ```
 
 - かなり外れているデータがあることがわかる
@@ -39,10 +41,21 @@ filtered_brain_data <- brain_data[brain_data$Body_weight < 80000, ]
 print(x = filtered_brain_data, n = 30)
 
 ggplot(data = filtered_brain_data, mapping = aes(x = Body_weight, y = Brain_weight)) +
-    geom_point()
+    geom_point() +
+    geom_smooth(method = "lm")
 
 cor(filtered_brain_data$Body_weight, filtered_brain_data$Brain_weight)
 ```
 
+- ちょっと相関強くなったので、またハズレ値を外してみる
+
+```{r}
+filtered_brain_data2 <- brain_data[(brain_data$Body_weight < 2000) & (brain_data$Brain_weight < 1000), ]
+ggplot(data = filtered_brain_data2, mapping = aes(x = Body_weight, y = Brain_weight)) +
+    geom_point() +
+    geom_smooth(method = "lm")
+```
+
 - 外れ値を外すと相関係数が上がってより相関が強まることがわかった
 - ただ、外れ値外すのって、大きくずれたらはい外しましょうってわけにはいかないと思うんだけど、どんな感じで判断するものなんだろうか？
+    - 書籍にはヒストグラム散布図をみて判断しましょうとあるが……
