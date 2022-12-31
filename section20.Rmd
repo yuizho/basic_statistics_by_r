@@ -1,0 +1,71 @@
+---
+title: "section20"
+output: html_document
+date: "2022-12-31"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# cranのmirrorを明示的に設定
+options(repos = "https://cran.ism.ac.jp/")
+install.packages("pwr")
+```
+
+# 検定力
+- 第二種の誤り (対立仮設が正しいときに帰無仮説を棄却できない誤り)を犯す確率は、1-検定力で求められる
+- >  差があるのが母集団の本当の状態である」という前提で，実際に有意差を正しく 検出できた場合には，統計的検定の目的が達成されているといえる。 このように有意差を 正しく検出できる確率のことを，「検定力」もしくは「検出力」（power）という。 検定力 は 1－β で定義される。 
+  - https://www.mizumot.com/method/mizumoto-takeuchi.pdf
+- ある検定の検定力は以下の要因から決まる
+  - 有意水準
+  - 対立仮設のもとでの母集団における効果の大きさ
+  - サンプルサイズ
+- 検定力は80%くらいを目安にすることが多いとのこと
+- Rは標準で検定力分析の関数が組み込まれているのでこれで確認することができる
+
+## t検定の検定力分析
+- t検定の場合は power.t.testで検定力の分析ができる
+  - powerが検定力になる
+  - strictは両側検定  
+  - deltaは効果量のことっぽい
+    - https://qiita.com/fhiyo/items/9cb2b05b36566ffe0eff#%E5%8A%B9%E6%9E%9C%E9%87%8F%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6
+    - 独立な2群のt検定の場合、0.5で中程度の効果量になるとのこと (なので、サンプルコードとかもdeltaに0.5を入れていそう)
+
+```{r}
+# n=10で検定力がどれくらいになるか調べる
+power.t.test(n = 10, delta = 0.5, sd = 1, sig.level = 0.05, strict = TRUE)
+
+# 検定力80%で、どれくらいのnが必要化を調べる
+power.t.test(delta = 0.5, sd = 1, sig.level = 0.05, power = 0.8, strict = TRUE)
+```
+
+- しかし、power系の関数はデフォルトで正確な計算がおこなわれなかったり、母平均の差や母標準偏差を指定する必要があるなどやや扱いづらい
+- pwrパッケージを使うことで、そのへんの扱いづらさが解決されるよ!
+
+## pwrを使った検定力分析
+
+- 以下の4つ引数のうち3つを入力すると、入力しなかった(NULL)ものの結果が取得できる
+    - 効果量 (d)
+    - サンプルサイズ (n)
+    - 有意水準 (sig.level)
+    - 検定力 (power)
+- 必要なサンプルサイズをもとめる機会が多そうだよなぁ
+
+```{r}
+library(pwr)
+
+# 検定力80%で、どれくらいのnが必要化を調べる (デフォルト両側検定)
+pwr.t.test(n = NULL, 0.5, sig.level = 0.05, power = 0.8)
+
+# 明示的に両側検定を指定
+pwr.t.test(n = NULL, 0.5, sig.level = 0.05, power = 0.8, type = "two.sample", alternative = "two.sided")
+```
+
+# 効果量の大きさの取得
+- 効果量はt検定の場合0.5で中程度と書いたが、検定ごとに小中大の値は異なっている
+- cohen.ES関数を使うことである検定の効果量ごとの値を取得することができる
+
+```{r}
+cohen.ES("chisq", size = "small")
+cohen.ES("t", size = "small")
+cohen.ES("t", size = "large")
+```
